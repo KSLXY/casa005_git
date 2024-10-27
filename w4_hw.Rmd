@@ -1,0 +1,85 @@
+---
+title: "w4_hw"
+output: html_document
+date: "2024-10-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(here)
+library(sf)
+library(raster)
+library(terra)
+library(readr)
+library(janitor)
+library(dplyr)
+library(RSQLite)
+library(tmap)
+library(tibble)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+```
+
+
+```{r}
+world_map <- st_read(here("E:/CASA005_R/w4/World_Countries_(Generalized)_9029012925078512962.geojson"))%>%
+  clean_names()
+```
+
+```{r}
+gender_index <- read_csv("E:/CASA005_R/w4/HDR23-24_Composite_indices_complete_time_series.csv",
+                       locale = locale(encoding = "latin1"),
+                       na = "n/a")%>%
+  clean_names()
+```
+
+```{r}
+gender_index_difference <- gender_index %>%
+  dplyr::select(country,hdicode,hdi_2010,hdi_2019) %>%
+  mutate(inequality_diff = hdi_2019 - hdi_2010)
+```
+
+```{r}
+# combine
+world_map_combined <- left_join(world_map, gender_index_difference, by = "country")
+```
+
+```{r}
+head(world_map_combined)
+```
+
+#difference in inequality between 2010 and 2019
+```{r}
+plot(world_map_combined$inequality_diff)
+```
+
+```{r}
+tm_shape(world_map_combined) +
+  tm_polygons("inequality_diff",
+              palette = "-RdBu",   
+              style = "pretty",    
+              midpoint = 0) +      
+  tm_layout(main.title = "Global Gender Inequality Change: 2010-2019", 
+            main.title.size = 1)  
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
