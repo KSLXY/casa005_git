@@ -17,17 +17,10 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r}
 library(here)
 library(sf)
-library(raster)
-library(terra)
 library(readr)
 library(janitor)
 library(dplyr)
-library(RSQLite)
 library(tmap)
-library(tibble)
-library(tidyverse)
-library(ggplot2)
-library(plotly)
 ```
 
 
@@ -59,9 +52,6 @@ head(world_map_combined)
 ```
 
 #difference in inequality between 2010 and 2019
-```{r}
-plot(world_map_combined$inequality_diff)
-```
 
 ```{r}
 tm_shape(world_map_combined) +
@@ -71,15 +61,6 @@ tm_shape(world_map_combined) +
               midpoint = 0) +      
   tm_layout(main.title = "Global Gender Inequality Change: 2010-2019", 
             main.title.size = 1)  
-```
-
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
